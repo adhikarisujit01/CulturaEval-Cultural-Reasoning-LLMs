@@ -1,0 +1,1 @@
+All fictional benchmark fixtures in synthetic_cases.jsonl are released under CC0 1.0 Universal. They are invented examples, not authentic cultural source texts or independently evaluated annotations.
