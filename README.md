@@ -15,7 +15,7 @@ CulturaEval is a reproducible experimental scaffold comparing the interpretation
 | `partial` | Accurate but incomplete contextual note |
 | `misleading` | Plausible but deliberately incorrect note |
 
-Responses contain an interpretation label, short explanation, exact passage quote, a context-use flag, an alternative interpretation and a confidence score.
+The generic synthetic framework and source-based pilot use different response schemas. The source-based pilot records a main interpretation, passage evidence, mentioned context claims, alternatives, uncertainty and likely errors.
 
 ### Quick start
 
@@ -39,11 +39,11 @@ The optional API backend uses an OpenAI-compatible Chat Completions JSON respons
 
 ### Source-based exploratory pilot (executed; limited human review)
 
-A separate, source-linked pilot runner has been executed under two prompt protocols, each with eight successful calls to GPT-4.1 mini. It uses for **two short excerpts** from historical English translations of the *Bhagavad Gita* and *Ramayana*. The four evidence conditions save raw model responses and request metadata. Results are stored locally and are not committed by default.
+A separate, source-linked pilot runner has been executed under two prompt protocols, each with eight successful calls to GPT-4.1 mini. It evaluates **two short excerpts** from historical English translations of the *Bhagavad Gita* and *Ramayana*. The four evidence conditions save raw model responses and request metadata. Results are stored locally and are not committed by default.
 
 ```bash
 export CULTURAEVAL_API_KEY='YOUR_KEY'
-python -m culturaeval.authentic_pilot --model gpt-4.1-mini --limit 2 --output results/authentic-pilot/gpt-4.1-mini
+python -m culturaeval.authentic_pilot --model gpt-4.1-mini --limit 2 --output results/authentic-pilot-v2/gpt-4.1-mini
 ```
 
 With two cases and four conditions, each execution makes up to **eight paid API requests**. It is **not automatically run** by the test suite. See [pilot instructions](docs/authentic-pilot.md), [source register](docs/authentic-source-register.md), and [dual-axis human evaluation rubric](docs/dual-axis-evaluation.md).
