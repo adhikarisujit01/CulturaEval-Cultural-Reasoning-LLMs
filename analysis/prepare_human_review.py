@@ -20,7 +20,9 @@ RATING_FIELDS = (
 )
 CONTEXT_LABELS = ("endorsed", "rejected", "mentioned_only", "mixed", "unclear", "not_applicable")
 
-def prepare(input_file: Path, output_dir: Path, seed: int = 2026) -> int:
+def prepare(input_file: Path, output_dir: Path, dataset_file: Path, seed: int = 2026) -> int:
+    cases = {x['id']: x for x in (json.loads(line) for line in dataset_file.read_text(encoding='utf-8').splitlines() if line.strip())}
+
     rows = [json.loads(line) for line in input_file.read_text(encoding="utf-8").splitlines() if line.strip()]
     if not rows:
         raise ValueError("No model responses found")
@@ -43,10 +45,16 @@ def prepare(input_file: Path, output_dir: Path, seed: int = 2026) -> int:
     reviews, mapping = [], []
     for idx, row in enumerate(rows, 1):
         a = row["answer"]
+        case = cases.get(row["case_id"])
+        if case is None:
+            raise ValueError(f"Missing source passage for {row['case_id']}")
+        context = "(No external context provided.)" if row["condition"] == "passage_only" else case["contexts"][row["condition"]]
         rid = f"REV-{idx:03d}"
         reviews.append({
             "review_id": rid,
             "model_id": row["provider_model"],
+            "source_passage": case["passage"],
+            "context_provided_to_model": context,
             "main_interpretation": a["main_interpretation"],
             "passage_evidence": a["passage_evidence"],
             "context_claims_mentioned": json.dumps(a["context_claims_used"], ensure_ascii=False),
@@ -92,9 +100,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", default="results/authentic-pilot/gpt-4.1-mini/model_responses.jsonl")
     parser.add_argument("--output", default="results/authentic-pilot/human-review")
+    parser.add_argument("--dataset", default="data/authentic_pilot_candidates.jsonl")
     parser.add_argument("--seed", type=int, default=2026)
     args = parser.parse_args()
-    total = prepare(Path(args.input), Path(args.output), args.seed)
+    total = prepare(Path(args.input), Path(args.output), Path(args.dataset), args.seed)
     print(f"Prepared {total} condition-label-masked records in {args.output}")
     print("All human rating fields left blank. Keep PRIVATE_condition_key.csv local.")
 
