@@ -49,6 +49,10 @@ def prepare(input_file: Path, output_dir: Path, dataset_file: Path, seed: int = 
         if case is None:
             raise ValueError(f"Missing source passage for {row['case_id']}")
         context = "(No external context provided.)" if row["condition"] == "passage_only" else case["contexts"][row["condition"]]
+        # Match the exact intervention text sent under the v2 protocol; do not
+        # expose a metadata warning that the model itself never received.
+        if row.get("prompt_protocol") == "v2_condition_masked":
+            context = context.removeprefix("Experimental adversarial note (NOT source fact): ").strip()
         rid = f"REV-{idx:03d}"
         reviews.append({
             "review_id": rid,
