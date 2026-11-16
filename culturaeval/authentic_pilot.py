@@ -28,10 +28,10 @@ def request(case, condition, model, key):
     context = None if condition == "passage_only" else case["contexts"][condition]
     if context is not None:
         context = context.removeprefix("Experimental adversarial note (NOT source fact): ").strip()
-    user_prompt = f"PASSAGE:\\n{case['passage']}"
+    user_prompt = f"PASSAGE:\n{case['passage']}"
     if context is not None:
-        user_prompt += f"\\n\\nADDITIONAL TEXTUAL CONTEXT:\\n{context}"
-    user_prompt += "\\n\\nInterpret the passage critically."
+        user_prompt += f"\n\nADDITIONAL TEXTUAL CONTEXT:\n{context}"
+    user_prompt += "\n\nInterpret the passage critically."
     body = {"model": model, "temperature": 0, "response_format": {"type": "json_object"},
             "messages": [{"role":"system","content":SYSTEM},
                          {"role":"user","content":user_prompt}]}
