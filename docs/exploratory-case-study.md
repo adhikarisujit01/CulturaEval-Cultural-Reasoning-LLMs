@@ -1,6 +1,6 @@
 # CulturaEval: exploratory case study of misleading context
 
-**Status:** Authorial qualitative inspection only. No independent human or expert ratings have been collected. This is not a validated benchmark.
+**Status:** Authorial qualitative comparison with subsequent *limited* independent human review of the two misleading-context v2 responses. See [reviewer scores and disagreements](limited-human-review.md). This is not a validated benchmark.
 
 ## Question
 
@@ -29,7 +29,7 @@ These examples suggest a hypothesis of **secondary-reasoning contamination**: a 
 
 A claim listed in the output field `context_claims_used` may be endorsed, rejected or merely mentioned. No endorsement judgment should rely solely on its appearance in that list. Full response text, original passage and independently checked evidence are required.
 
-The two prompting protocols differ in more than whether they identify the condition; the comparison does not isolate a single causal factor. Sample size is two source passages from related cultural traditions; both were accessed through historical English translations. No repeated model samples, source-expert validation, independently annotated reviewer ratings, or population-level inference are available. The intervention is **curated context**, not an implemented retrieval ranking system.
+The two prompting protocols differ in more than whether they identify the condition; the comparison does not isolate a single causal factor. Sample size is two source passages from related cultural traditions; both were accessed through historical English translations. No repeated model samples, source-expert validation or population-level inference are available. Two independent reviewers have now rated the **two v2 misleading-context responses only**; their main-axis ratings disagree substantially (see linked review report). The intervention is **curated context**, not an implemented retrieval ranking system.
 
 ## Reproduction and validation path
 
