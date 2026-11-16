@@ -39,7 +39,7 @@ The optional API backend uses an OpenAI-compatible Chat Completions JSON respons
 
 ### Source-based exploratory pilot (executed; limited human review)
 
-A separate, source-linked pilot runner has been executed under two prompt protocols, each with eight successful calls to GPT-4.1 mini. It evaluates **two short excerpts** from historical English translations of the *Bhagavad Gita* and *Ramayana*. The four evidence conditions save raw model responses and request metadata. Results are stored locally and are not committed by default.
+A separate, source-linked pilot runner has been executed under two prompt protocols, each with eight successful calls to GPT-4.1 mini. It evaluates **two short excerpts** from historical English translations of the *Bhagavad Gita* and *Ramayana*. The four evidence conditions save model responses and request metadata. The original provider responses are retained locally; a privacy-minimized, inspectable 16-response export is now published in [data/experimental-results/model-responses.jsonl](data/experimental-results/model-responses.jsonl).
 
 ```bash
 export CULTURAEVAL_API_KEY='YOUR_KEY'
@@ -49,6 +49,20 @@ python -m culturaeval.authentic_pilot --model gpt-4.1-mini --limit 2 --output re
 With two cases and four conditions, each execution makes up to **eight paid API requests**. It is **not automatically run** by the test suite. See [pilot instructions](docs/authentic-pilot.md), [source register](docs/authentic-source-register.md), and [dual-axis human evaluation rubric](docs/dual-axis-evaluation.md).
 
 The primary evaluation distinguishes **culturally grounded interpretation** from **recognition of multiple defensible interpretations**. These are human-scored dimensions (0–4 each), not automated accuracy values. Two reviewers have now rated **only the two misleading-context responses** from the condition-masked GPT-4.1-mini pilot. These are limited preliminary judgments, not expert validation or a benchmark-level performance result. The remaining responses lack human ratings. See [limited human review](docs/limited-human-review.md), [anonymized scores](docs/human-review-scores.csv), and [exploratory case study](docs/exploratory-case-study.md).
+
+### Reproduce the published descriptive comparison (no API key needed)
+
+The publication dataset contains both original-protocol and condition-masked-protocol responses, including all four conditions for each of the two passages. It omits provider response IDs, usage metadata and private reviewer identities. The original model calls cannot be replayed without an API key, but their published answer texts can be inspected and summarized offline:
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 analysis/analyze_public_results.py
+cat results/public-review/descriptive-summary.csv
+```
+
+The output reports numbers of responses, claims *listed* and alternative interpretations *listed* by protocol and condition. Mention counts are **not** factual accuracy, endorsement, or culturally grounded reasoning scores. For reviewer judgments of just the two condition-masked misleading responses, see [limited human review](docs/limited-human-review.md) and [original anonymized ratings](docs/human-review-scores.csv).
+
+Note that the two protocols differ in presentation and warning text; they do not support isolating a causal effect. Context notes were hand-curated, not produced by an implemented retrieval system.
 
 ### Current experimental evidence
 
@@ -64,6 +78,8 @@ See [the reviewed-results report](docs/limited-human-review.md), [reviewer score
 - `culturaeval/`: prompt construction, response validation, metrics, synthetic demo, and optional API runner.
 - `data/synthetic_cases.jsonl`: 40 **fictional** test fixtures (10 motifs × 4 variants), not independently annotated literary evidence.
 - `data/authentic_pilot_candidates.jsonl`: two source-linked historical-translation pilot cases, awaiting independent validation.
+- `data/experimental-results/model-responses.jsonl`: 16 saved model answers, eight per prompting protocol.
+- `analysis/analyze_public_results.py`: offline reproducible structural summary of published answers.
 - `tests/`: unit and integration tests.
 - `docs/methodology.md`: experimental plan, research caveats, and next milestones.
 - `docs/annotation-guide.md`: proposed manual annotation protocol.
