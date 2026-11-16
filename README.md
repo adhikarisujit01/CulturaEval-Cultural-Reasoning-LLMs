@@ -37,18 +37,27 @@ python -m culturaeval --backend api --model YOUR_MODEL --limit 4 --output result
 
 The optional API backend uses an OpenAI-compatible Chat Completions JSON response; it may incur usage charges and requires an explicit opt-in. Do not commit credentials.
 
-### Source-based exploratory pilot (real model; not yet executed or human-validated)
+### Source-based exploratory pilot (executed; limited human review)
 
-A separate, source-linked pilot runner exists for **two short excerpts** from historical English translations of the *Bhagavad Gita* and *Ramayana*. It uses the same four evidence conditions and saves raw model responses and request metadata for later human evaluation.
+A separate, source-linked pilot runner has been executed under two prompt protocols, each with eight successful calls to GPT-4.1 mini. It uses for **two short excerpts** from historical English translations of the *Bhagavad Gita* and *Ramayana*. The four evidence conditions save raw model responses and request metadata. Results are stored locally and are not committed by default.
 
 ```bash
 export CULTURAEVAL_API_KEY='YOUR_KEY'
 python -m culturaeval.authentic_pilot --model gpt-4.1-mini --limit 2 --output results/authentic-pilot/gpt-4.1-mini
 ```
 
-With two cases and four conditions, this makes up to **eight paid API requests**. It is **not automatically run** by the test suite. See [pilot instructions](docs/authentic-pilot.md), [source register](docs/authentic-source-register.md), and [dual-axis human evaluation rubric](docs/dual-axis-evaluation.md).
+With two cases and four conditions, each execution makes up to **eight paid API requests**. It is **not automatically run** by the test suite. See [pilot instructions](docs/authentic-pilot.md), [source register](docs/authentic-source-register.md), and [dual-axis human evaluation rubric](docs/dual-axis-evaluation.md).
 
-The primary evaluation distinguishes **culturally grounded interpretation** from **recognition of multiple defensible interpretations**. These are human-scored dimensions (0–4 each), not automated accuracy values. At present the pilot cases and context notes have **not** received independent expert annotation; no empirical performance result or research finding is claimed.
+The primary evaluation distinguishes **culturally grounded interpretation** from **recognition of multiple defensible interpretations**. These are human-scored dimensions (0–4 each), not automated accuracy values. Two reviewers have now rated **only the two misleading-context responses** from the condition-masked GPT-4.1-mini pilot. These are limited preliminary judgments, not expert validation or a benchmark-level performance result. The remaining responses lack human ratings. See [limited human review](docs/limited-human-review.md), [anonymized scores](docs/human-review-scores.csv), and [exploratory case study](docs/exploratory-case-study.md).
+
+### Current experimental evidence
+
+- **Experiment 1:** eight completed API requests with the original prompt protocol; no human ratings.
+- **Experiment 2:** eight completed API requests with condition labels and explicit adversarial warnings removed from the model-facing prompt; no API failures reported.
+- **Human ratings:** two independent invited reviewers assessed only the Gita and Ramayana **misleading-context** responses from Experiment 2, yielding four reviewer–passage rating rows. Reviewers disagreed on the two main axes; this disagreement is reported without adjudication.
+- **Interpretive finding:** a possible secondary-reasoning contamination pattern in the Ramayana response, where false supplied context appears in subsequent explanation despite a broadly plausible main interpretation. This remains a small exploratory case observation, not a reliable prevalence or causal estimate.
+
+See [the reviewed-results report](docs/limited-human-review.md), [reviewer scores](docs/human-review-scores.csv), and [preliminary source-evidence audit](docs/preliminary-source-evidence-audit.md).
 
 ### Contents
 
