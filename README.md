@@ -94,6 +94,6 @@ The next phase will curate 30–50 culturally situated source passages with lega
 
 ### Attribution
 
-This is a new research portfolio project, distinct from the author's earlier coursework. Code-development assistance may include AI tools. Authorship, data provenance and research milestones should be represented accurately.
+This is a new research portfolio project, distinct from the author's earlier coursework. Research claims and milestones are documented with attention to data provenance, reproducibility, and limitations.
 
 **License:** Code MIT; constructed benchmark fixtures CC0-1.0.
