@@ -1,0 +1,5 @@
+passage_id,model_id,condition,reviewer_id,cultural_reasoning,interpretive_plurality,factual_grounding,primary_evidence_support,context_handling
+AUTH-PILOT-GITA-01,gpt-4.1-mini-2025-04-14,misleading,R1,4,3,1,1,rejects
+AUTH-PILOT-GITA-01,gpt-4.1-mini-2025-04-14,misleading,R2,2,0,1,1,merely_mentions
+AUTH-PILOT-RAMA-01,gpt-4.1-mini-2025-04-14,misleading,R1,3,1,1,1,merely_mentions
+AUTH-PILOT-RAMA-01,gpt-4.1-mini-2025-04-14,misleading,R2,1,0,1,1,merely_mentions
