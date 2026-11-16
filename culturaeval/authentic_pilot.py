@@ -23,10 +23,18 @@ alternative_interpretations is an array; other fields are strings except
 context_claims_used which is an array of strings."""
 
 def request(case, condition, model, key):
-    context = "(No external context provided.)" if condition == "passage_only" else case["contexts"][condition]
+    # Condition labels and adversarial-status disclosures must never reach the model.
+    # The intervention assignment is retained only in the local evaluation logs.
+    context = None if condition == "passage_only" else case["contexts"][condition]
+    if context is not None:
+        context = context.removeprefix("Experimental adversarial note (NOT source fact): ").strip()
+    user_prompt = f"PASSAGE:\\n{case['passage']}"
+    if context is not None:
+        user_prompt += f"\\n\\nADDITIONAL TEXTUAL CONTEXT:\\n{context}"
+    user_prompt += "\\n\\nInterpret the passage critically."
     body = {"model": model, "temperature": 0, "response_format": {"type": "json_object"},
             "messages": [{"role":"system","content":SYSTEM},
-                         {"role":"user","content":f"PASSAGE:\n{case['passage']}\n\nEXTERNAL CONTEXT [{condition}]:\n{context}\n\nInterpret the passage critically."}]}
+                         {"role":"user","content":user_prompt}]}
     req = urllib.request.Request("https://api.openai.com/v1/chat/completions",
                                   data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
                                   headers={"Authorization":f"Bearer {key}", "Content-Type":"application/json"},
@@ -44,7 +52,7 @@ def main():
     p.add_argument("--dataset",default="data/authentic_pilot_candidates.jsonl")
     p.add_argument("--model",default="gpt-4.1-mini")
     p.add_argument("--limit",type=int,default=2)
-    p.add_argument("--output",default="results/authentic-pilot")
+    p.add_argument("--output",default="results/authentic-pilot-v2")
     args=p.parse_args()
     key=os.environ.get("CULTURAEVAL_API_KEY")
     if not key:
@@ -57,7 +65,7 @@ def main():
         for condition in CONDITIONS:
             try:
                 response=request(case,condition,args.model,key)
-                results.append({"case_id":case["id"],"model_requested":args.model,
+                results.append({"case_id":case["id"],"model_requested":args.model, "prompt_protocol":"v2_condition_masked",
                                 "condition":condition,"source_url":case["source_url"],
                                 "review_status":case["review_status"],**response})
                 print(f"OK: {case['id']} / {condition}",flush=True)
@@ -77,7 +85,7 @@ def main():
     with (out/"model_responses.jsonl").open("w",encoding="utf-8") as f:
         for row in results: f.write(json.dumps(row,ensure_ascii=False)+"\n")
     report={"status":"SOURCE-BASED EXPLORATORY PILOT; NOT CULTURALLY VALIDATED",
-            "model":args.model,"cases":len(cases),"successful_requests":len(results),
+            "model":args.model,"prompt_protocol":"v2_condition_masked","cases":len(cases),"successful_requests":len(results),
             "failed_requests":len(failures),"failures":failures,
             "human_scores_available":False,
             "limitations":["Primary source passages checked at cited Gutenberg URLs",
